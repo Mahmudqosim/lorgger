@@ -2,7 +2,7 @@ export const Button = {
   baseStyle: {
     display: "flex",
     gap: "2",
-    borderRadius: "full",
+    borderRadius: "md",
     fontSize: "1rem",
     fontWeight: 500,
     _focus: {

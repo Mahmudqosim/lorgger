@@ -4,6 +4,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Heading,
   Image,
   Input,
   InputGroup,
@@ -12,14 +13,14 @@ import {
   Spinner,
   Stack,
   Text,
-  useToast,
   chakra,
-  Heading,
+  useToast,
 } from "@chakra-ui/react"
 import { useState } from "react"
-import { Link as ReactRouterLink } from "react-router-dom"
-import lorggerLogo from "../../assets/svgs/Logo.svg"
+import { useNavigate, Link as ReactRouterLink } from "react-router-dom"
 import registerBackgroundImg from "../../assets/images/register-background.jpg"
+import lorggerLogo from "../../assets/svgs/Logo.svg"
+import { createUserProfile, loginUser, registerUser } from "../../utils/auth"
 
 const initialState = {
   email: "",
@@ -34,6 +35,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
 
   const toast = useToast()
+  const navigate = useNavigate()
 
   // const navigate = useNavigate()
 
@@ -46,15 +48,64 @@ export default function Register() {
 
   const handleClick = () => setShow(!show)
 
-  const handleRegister = async (e) => {
+  const handleRegister = (e) => {
     e.preventDefault()
 
     if (form.email && form.firstName && form.lastName && form.password) {
       setLoading(true)
 
-      setTimeout(() => {
-        setLoading(false)
-      }, 2000)
+      registerUser({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        password: form.password,
+      })
+        .then((data) => {
+          console.log(data)
+          setLoading(false)
+
+          createUserProfile(data)
+            .then((data) => {
+              console.log(data)
+
+              loginUser({email: form.email, password: form.password})
+                .then((data) => {
+                  if (data) navigate("/")
+                })
+                .catch((error) => {
+                  console.log(error)
+                  navigate("/login")
+                })
+            })
+            .catch((error) => {
+              console.log(error)
+              navigate("/login")
+            })
+        })
+        .catch((error) => {
+          // Handles error
+          setLoading(false)
+
+          if (!error.message) {
+            toast({
+              title: "Authentication error",
+              description: "Something went wrong",
+              status: "error",
+              duration: 2000,
+              isClosable: true,
+              position: "bottom-left",
+            })
+          } else {
+            toast({
+              title: "Authentication error",
+              description: error.message,
+              status: "error",
+              duration: 2000,
+              isClosable: true,
+              position: "bottom-left",
+            })
+          }
+        })
     } else {
       toast({
         title: "Authentication error",
@@ -69,6 +120,30 @@ export default function Register() {
 
   return (
     <Stack minH={"100vh"} direction={{ base: "column", lg: "row" }}>
+      <chakra.div
+        flex={1}
+        display={{ base: "none", lg: "flex" }}
+        backgroundImage={registerBackgroundImg}
+        backgroundSize="cover"
+        backgroundRepeat="no-repeat"
+        p="10"
+        pb="24"
+        color="white"
+        alignItems="flex-end"
+      >
+        <Flex
+          bg="blackAlpha.500"
+          p="6"
+          borderRadius="5"
+          flexDirection="column"
+          gap="4"
+        >
+          <Heading>
+            CodeCrafters Unite: Forge Your Profile in our Developer Nexus!
+          </Heading>
+        </Flex>
+      </chakra.div>
+
       <Flex flex={1} bg={"gray.50"}>
         <Stack spacing={8} mx={"auto"} width="lg" py={12} px={6}>
           <Stack align={"center"}>
@@ -157,25 +232,6 @@ export default function Register() {
           </Box>
         </Stack>
       </Flex>
-
-      <chakra.div
-        flex={1}
-        display={{ base: "none", lg: "flex" }}
-        backgroundImage={registerBackgroundImg}
-        backgroundSize="cover"
-        backgroundRepeat="no-repeat"
-        p="10"
-        pb="24"
-        color="white"
-        alignItems="flex-end"
-      >
-        <Flex bg="blackAlpha.500" p="6" borderRadius="5" flexDirection="column" gap="4">
-          <Heading>
-            CodeCrafters Unite: Forge Your Profile in our Developer Nexus!
-          </Heading>
-          <Button variant="accent" width="fit-content">Learn More</Button>
-        </Flex>
-      </chakra.div>
     </Stack>
   )
 }

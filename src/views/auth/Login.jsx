@@ -12,11 +12,12 @@ import {
   Stack,
   Text,
   useToast,
-  Spinner
+  Spinner,
 } from "@chakra-ui/react"
 import { useState } from "react"
-import { Link as ReactRouterLink } from "react-router-dom"
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom"
 import lorggerLogo from "../../assets/svgs/Logo.svg"
+import { loginUser } from "../../utils/auth"
 const initialState = {
   email: "",
   password: "",
@@ -28,8 +29,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
 
   const toast = useToast()
-
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setForm((form) => ({
@@ -44,10 +44,36 @@ export default function Login() {
     if (form.email && form.password) {
       setLoading(true)
 
-      setTimeout(() => {
-        setLoading(false)
-      }, 2000)
+      loginUser({ email: form.email, password: form.password })
+        .then((data) => {
+          console.log(data)
+          setLoading(false)
 
+          navigate("/")
+        })
+        .catch((error) => {
+          console.log(error)
+          setLoading(false)
+          if (!error.message) {
+            toast({
+              title: "Authentication error",
+              description: "Something went wrong",
+              status: "error",
+              duration: 2000,
+              isClosable: true,
+              position: "bottom-left",
+            })
+          } else {
+            toast({
+              title: "Authentication error",
+              description: error.message,
+              status: "error",
+              duration: 2000,
+              isClosable: true,
+              position: "bottom-left",
+            })
+          }
+        })
     } else {
       toast({
         title: "Authentication error",
@@ -113,7 +139,7 @@ export default function Login() {
                 Forgot password?
               </Link>
               <Button size="lg" type="submit" onClick={handleLogin}>
-              {loading ? <Spinner size="sm" /> : "Sign In"}
+                {loading ? <Spinner size="sm" /> : "Sign In"}
               </Button>
               <Text alignSelf="center" fontSize="md" fontWeight="medium">
                 New here?{" "}

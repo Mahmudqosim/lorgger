@@ -29,7 +29,7 @@ export const theme = extendTheme({
     },
   },
   fonts: {
-    heading: `'Urbanist', sans-serif`,
+    heading: `'Golos Text', sans-serif`,
     body: `'Plus Jakarta Sans', sans-serif`
   },
   styles: {

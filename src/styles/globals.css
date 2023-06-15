@@ -6,3 +6,7 @@ html {
 * {
   box-sizing: border-box;
 }
+
+.cm-theme-dark {
+  width: 100%;
+}
