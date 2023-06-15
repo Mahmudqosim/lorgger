@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 // import DashboardLayout from "./layouts/DashboardLayout"
 
-import Login from "./views/Auth/Login"
-import Register from "./views/Auth/Register"
+import Login from "./views/auth/Login"
+import Register from "./views/auth/Register"
 import AuthLayout from "./layouts/AuthLayout"
 import NotFound from "./views/NotFound"
 import DashboardLayout from "./layouts/DashboardLayout"
