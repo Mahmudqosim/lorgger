@@ -9,6 +9,7 @@ import DashboardLayout from "./layouts/DashboardLayout"
 import ProtectedRoute from "./components/ProtectedRoute"
 import Dashboard from "./views/dashboard"
 import Profile from "./views/profile"
+import Settings from "./views/settings"
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/:username" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
         </Route>
 

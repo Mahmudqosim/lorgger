@@ -31,29 +31,27 @@ export const createPost = async ({
   }
 }
 
-export const getPosts = async (lastId) => {
-  const queryArr = lastId
-    ? [Query.limit(30)]
-    : [Query.limit(30), Query.cursorAfter(lastId)]
-
+export const getPosts = async () => {
   try {
-    return databases.listDocuments(DATABASE_ID, POST_COLLECTION_ID, queryArr)
+    return databases.listDocuments(DATABASE_ID, POST_COLLECTION_ID)
   } catch (error) {
     return Object.create(error)
   }
 }
 
-export const getUserPosts = async (userId, lastId) => {
-  const queryArr = lastId
-    ? [Query.limit(30)]
-    : [Query.limit(30), Query.cursorAfter(lastId)]
-
+export const getUserPost = async ({ userId }) => {
   try {
-    return databases.listDocuments(
-      DATABASE_ID,
-      POST_COLLECTION_ID,
-      queryArr.concat(Query.equal("userId", [userId]))
-    )
+    return databases.listDocuments(DATABASE_ID, POST_COLLECTION_ID, [
+      Query.equal("userId", [userId]),
+    ])
+  } catch (error) {
+    return Object.create(error)
+  }
+}
+
+export const deletePost = async (postId) => {
+  try {
+    return databases.deleteDocument(DATABASE_ID, POST_COLLECTION_ID, postId)
   } catch (error) {
     return Object.create(error)
   }

@@ -29,6 +29,7 @@ export const createUserProfile = async (data) => {
       ID.unique(),
       JSON.stringify({
         userId: data.$id,
+        name: data.name,
         username: `${data.name
           .split(" ")[0]
           .toLowerCase()

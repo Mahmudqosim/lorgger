@@ -5,8 +5,8 @@ import { dracula } from "@uiw/codemirror-theme-dracula"
 import CodeMirror, { basicSetup } from "@uiw/react-codemirror"
 import { BsCircleFill } from "react-icons/bs"
 
-const CodeSnippet = ({ code, setCode, language }) => {
-  const langExtension = language ? langs[language] : langs['javascript']
+const CodeViewer = ({ code, language, short }) => {
+  const langExtension = language ? langs[language] : langs["javascript"]
 
   return (
     <Flex id="code-snippet" flexDirection="column" width="full">
@@ -29,15 +29,13 @@ const CodeSnippet = ({ code, setCode, language }) => {
         value={code}
         width="100%"
         height="100%"
-        maxHeight="300px"
+        maxHeight={short && "250px"}
         style={{
           fontSize: "1rem",
         }}
         theme={dracula}
         extensions={[EditorView.lineWrapping, langExtension()]}
-        onChange={(code) => {
-          setCode(code)
-        }}
+        readOnly
       />
 
       <Box
@@ -51,4 +49,4 @@ const CodeSnippet = ({ code, setCode, language }) => {
   )
 }
 
-export default CodeSnippet
+export default CodeViewer

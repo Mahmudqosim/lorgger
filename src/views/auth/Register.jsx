@@ -61,12 +61,10 @@ export default function Register() {
         password: form.password,
       })
         .then((data) => {
-          console.log(data)
           setLoading(false)
 
           createUserProfile(data)
-            .then((data) => {
-              console.log(data)
+            .then(() => {
 
               loginUser({email: form.email, password: form.password})
                 .then((data) => {

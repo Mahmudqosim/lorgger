@@ -15,7 +15,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { FiChevronDown, FiSearch, FiUser } from "react-icons/fi"
 import {
   HiBell,
@@ -27,7 +27,7 @@ import {
   HiUsers,
   HiX,
 } from "react-icons/hi"
-import { useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useRecoilValue, useResetRecoilState } from "recoil"
 import lorggerLogo from "../../assets/svgs/Logo.svg"
 import { userState } from "../../atoms/user"
@@ -53,10 +53,6 @@ export default function Navbar() {
   const toast = useToast()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-
-  useEffect(() => {
-    console.log(user)
-  }, [user])
 
   const handleLogout = () => {
     logout()
@@ -102,9 +98,12 @@ export default function Navbar() {
         zIndex="overlay"
         position="sticky"
         top="0"
+        shadow="sm"
       >
         <HStack spacing="4">
-          <Image h="8" src={lorggerLogo} alt="lorgger" />
+          <Link to="/">
+            <Image h="8" src={lorggerLogo} alt="lorgger" />
+          </Link>
 
           {user.profile && (
             <Menu
@@ -141,10 +140,12 @@ export default function Navbar() {
                   return (
                     <MenuItem
                       key={index}
+                      as={Link}
+                      to={`/${menu.active}`}
                       color={isMenuActive ? "white" : "gray.500"}
-                      bg={isMenuActive ? "brand.500" : "none"}
+                      bg={isMenuActive ? "red.500" : "none"}
                       _hover={{
-                        bg: `${isMenuActive ? "brand.400" : "gray.100"}`,
+                        bg: `${isMenuActive ? "red.400" : "gray.100"}`,
                       }}
                       icon={<menu.Icon fontSize="1.25rem" />}
                     >
@@ -163,6 +164,8 @@ export default function Navbar() {
 
             return (
               <Button
+                as={Link}
+                to={`/${menu.active}`}
                 key={index}
                 bg={isMenuActive ? "gray.100" : "none"}
                 color={isMenuActive ? "gray.500" : "gray.400"}
@@ -224,7 +227,7 @@ export default function Navbar() {
                 >
                   Profile
                 </MenuItem>
-                <MenuItem icon={<HiOutlineCog />}>Settings</MenuItem>
+                <MenuItem onClick={() => navigate(`/settings`)} icon={<HiOutlineCog />}>Settings</MenuItem>
                 <MenuDivider />
                 <MenuItem onClick={handleLogout} icon={<HiLogout />}>
                   Sign out

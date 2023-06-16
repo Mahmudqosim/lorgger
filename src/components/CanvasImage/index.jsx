@@ -39,10 +39,8 @@ export default function CanvasImage({ source, setSelectedFile, type }) {
 
       const file = await dataUriToFile(
         canvas.toDataURL(),
-        `${Math.floor(Math.random() * Date.now()).toString(36)}-file.png`
+        `${Date.now().toString(36)}-file.png`
       )
-
-      console.log(file)
 
       setSelectedFile(file)
     },

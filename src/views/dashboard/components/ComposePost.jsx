@@ -9,23 +9,24 @@ import {
   useToast,
 } from "@chakra-ui/react"
 import { useRef, useState } from "react"
+import { flushSync } from "react-dom"
 import { FcAddImage } from "react-icons/fc"
 import { HiCode, HiX } from "react-icons/hi"
-import CanvasImage from "../../../components/CanvasImage"
-import CodeSnippet from "./CodeSnippet"
-import { flushSync } from "react-dom"
-import { AddIcon } from "@chakra-ui/icons"
-import { createPost } from "../../../utils/posts"
-import { useRecoilValue } from "recoil"
+import { useRecoilValue, useSetRecoilState } from "recoil"
 import { userState } from "../../../atoms/user"
-import { uploadFile } from "../../../utils/uploads"
+import CanvasImage from "../../../components/CanvasImage"
 import { POSTS_BUCKET_ID } from "../../../utils/constants"
+import { createLikeDoc } from "../../../utils/likes"
+import { createPost } from "../../../utils/posts"
+import { uploadFile } from "../../../utils/uploads"
+import CodeSnippet from "./CodeSnippet"
+import { postsState } from "../../../atoms/posts"
 
 const ComposePost = () => {
   const [post, setPost] = useState({
     content: "",
     image: null,
-    code: "",
+    code: "// Start writing",
   })
 
   const [codeAdded, setCodeAdded] = useState(false)
@@ -35,14 +36,13 @@ const ComposePost = () => {
   const [loading, setLoading] = useState(false)
 
   const user = useRecoilValue(userState)
+  const setHomePosts = useSetRecoilState(postsState)
 
   const filePickerRef = useRef(null)
 
   const toast = useToast()
 
   function handleFileChange(event) {
-    console.log("Added you")
-
     const FILE_TYPES = ["image/png", "image/jpg", "image/jpeg", "image/webp"]
 
     if (event.target.files.length < 1) {
@@ -84,7 +84,6 @@ const ComposePost = () => {
   }
 
   function createPostAndUploadImage() {
-    alert("hey")
     setLoading(true)
 
     /* if (post.content.length < 5) {
@@ -102,10 +101,37 @@ const ComposePost = () => {
           profilePicture: user.profile.profilePicture,
           username: user.profile.username,
         })
-          .then((createdPost) => console.log(createdPost))
-          .catch((error) => console.log(error))
+          .then((createdPost) => {
+            createLikeDoc(createdPost.$id, user.user.$id)
+              .then(() => {
+                setLoading(false)
+
+                setPost({
+                  content: "",
+                  image: null,
+                  code: "// Start writing",
+                })
+
+                setCodeAdded(false)
+
+                setHomePosts((posts) => {
+                  return [...posts, createdPost]
+                })
+              })
+              .catch((error) => {
+                setLoading(false)
+                console.log(error)
+              })
+          })
+          .catch((error) => {
+            console.log(error)
+            setLoading(false)
+          })
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error)
+        setLoading(false)
+      })
   }
 
   return (
@@ -125,6 +151,7 @@ const ComposePost = () => {
         borderBottom="1px solid"
         borderBottomColor="gray.200"
         borderRadius="10px 10px 0 0"
+        value={post.content}
         onChange={(e) =>
           setPost((post) => ({ ...post, content: e.target.value }))
         }
@@ -137,8 +164,8 @@ const ComposePost = () => {
             right="8"
             height="3rem"
             p="2"
-            bg="brand.500"
-            _hover={{ bg: "brand.300" }}
+            bg="red.500"
+            _hover={{ bg: "red.300" }}
             borderRadius="full"
             aspectRatio="1/1"
             onClick={() => {
@@ -169,8 +196,8 @@ const ComposePost = () => {
             right="8"
             height="3rem"
             p="2"
-            bg="brand.500"
-            _hover={{ bg: "brand.300" }}
+            bg="red.500"
+            _hover={{ bg: "red.300" }}
             borderRadius="full"
             aspectRatio="1/1"
             onClick={() => {
@@ -203,7 +230,6 @@ const ComposePost = () => {
             color="gray.600"
             variant="outline"
             onClick={() => {
-              console.log(filePickerRef)
               filePickerRef.current.click()
             }}
           >
@@ -251,7 +277,6 @@ const ComposePost = () => {
         </Stack>
 
         <Button
-          leftIcon={<AddIcon />}
           iconSpacing={0}
           onClick={() => {
             if (post.content.trim().length < 6) {
@@ -269,6 +294,7 @@ const ComposePost = () => {
 
             createPostAndUploadImage()
           }}
+          disabled={loading}
         >
           {loading ? <Spinner size="sm" /> : "Create post"}
         </Button>

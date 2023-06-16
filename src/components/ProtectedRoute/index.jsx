@@ -28,7 +28,6 @@ const ProtectedRoute = () => {
           if (!user.profile) {
             getAuthUserProfile(data.$id)
               .then((profile) => {
-                console.log("Profile", profile)
 
                 setUser(() => ({
                   user: data,
@@ -48,8 +47,6 @@ const ProtectedRoute = () => {
             user: data,
             loggedIn: true,
           }))
-
-          console.log(data)
 
           setLoading(false)
           setRedirectToLogin(false)
@@ -103,7 +100,7 @@ const ProtectedRoute = () => {
         alignItems="center"
         mt={12}
       >
-        <WarningTwoIcon color="brand.300" fontSize="5xl" />
+        <WarningTwoIcon color="red.300" fontSize="5xl" />
         <Heading color="gray.600">
           Oops! Something went wrong with our server or your internet
           connection.

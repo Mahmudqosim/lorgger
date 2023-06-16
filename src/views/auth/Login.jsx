@@ -45,8 +45,7 @@ export default function Login() {
       setLoading(true)
 
       loginUser({ email: form.email, password: form.password })
-        .then((data) => {
-          console.log(data)
+        .then(() => {
           setLoading(false)
 
           navigate("/")
