@@ -125,7 +125,7 @@ const Post = ({ post, profile, userId, setPosts }) => {
         </ReactRouterLink>
       </VStack>
 
-      <VStack width="full">
+      <VStack alignItems="flex-start" width="full">
         <Flex
           width="full"
           gap={2}

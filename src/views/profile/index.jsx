@@ -169,13 +169,13 @@ const Profile = () => {
               >
                 <Text>
                   <chakra.span color="gray.700" fontWeight="bold">
-                    16
+                    {userProfile.followers.length}
                   </chakra.span>{" "}
                   Followers
                 </Text>
                 <Text>
                   <chakra.span color="gray.700" fontWeight="bold">
-                    7
+                  {userProfile.following.length}
                   </chakra.span>{" "}
                   Following
                 </Text>
