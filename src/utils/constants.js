@@ -8,7 +8,6 @@ export const PROJECT_ID = import.meta.env.VITE_PROJECT_ID
 export const DATABASE_ID = import.meta.env.VITE_LORGGER_DATABASE_ID
 export const USER_COLLECTION_ID = import.meta.env.VITE_USER_COLLECTION_ID
 export const POST_COLLECTION_ID = import.meta.env.VITE_POST_COLLECTION_ID
-export const COMMENTS_COLLECTION_ID = import.meta.env.VITE_COMMENTS_COLLECTION_ID
 export const LIKES_COLLECTION_ID = import.meta.env.VITE_LIKES_COLLECTION_ID
 
 // Storage buckets
